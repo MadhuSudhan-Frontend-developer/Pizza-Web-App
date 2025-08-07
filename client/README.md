@@ -7,17 +7,16 @@ Currently, two official plugins are available:
 - [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
 - [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
 
-select client and open terniminal in vscode.
-enter the cmd is 
-npm run dev
-local host is started and open browser.
-the localhost is
- http://localhost:___/
+# select client and open terniminal in vscode.
+# enter the cmd is 
+# npm run dev
+# local host is started and open browser.
+the localhost is http://localhost:___/
  
-open new terminal 
-select the server/index.js file
-enter the cmd is
-npm start
+# open new terminal 
+# select the server/index.js file
+# enter the cmd is
+# npm start
 
 mongodb is connection successfull. 
 
