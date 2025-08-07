@@ -1,6 +1,6 @@
 // server/index.js
 
-require('dotenv').config(); // Load .env variables
+require('dotenv').config(); // Load environment variables from .env
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
@@ -12,17 +12,12 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
-// Connect to MongoDB using .env
-mongoose.connect(process.env.MONGO_URI, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true
-}).then(() => {
-    console.log("MongoDB connected successfully");
-}).catch((err) => {
-    console.error("Error connecting to MongoDB:", err);
-});
+// ✅ MongoDB connection (no deprecated options)
+mongoose.connect(process.env.MONGO_URI)
+    .then(() => console.log("MongoDB connected successfully"))
+    .catch((err) => console.error("Error connecting to MongoDB:", err));
 
-// Nodemailer transporter using .env
+// ✅ Nodemailer transporter
 const transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
@@ -31,19 +26,24 @@ const transporter = nodemailer.createTransport({
     }
 });
 
-// In-memory OTP storage
+// 🔐 In-memory OTP store (consider Redis/db for production)
 const otpMap = {};
 
-// ========== Routes ==========
+// ===== ROUTES =====
 
-// Register
-app.post('/register', (req, res) => {
-    registrationModel.create(req.body)
-        .then(registration => res.json(registration))
-        .catch(err => res.json(err));
+// ✅ Home Route (fixes "Cannot GET /" issue)
+app.get('/', (req, res) => {
+    res.send("Pizza Web App backend is running...");
 });
 
-// Login
+// ✅ Register User
+app.post('/register', (req, res) => {
+    registrationModel.create(req.body)
+        .then(user => res.json(user))
+        .catch(err => res.status(500).json({ error: err.message }));
+});
+
+// ✅ Login
 app.post('/login', async (req, res) => {
     const { email, password } = req.body;
     try {
@@ -55,7 +55,7 @@ app.post('/login', async (req, res) => {
     }
 });
 
-// Profile
+// ✅ Profile CRUD
 app.post('/profile', async (req, res) => {
     try {
         const newProfile = await registrationModel.create(req.body);
@@ -93,17 +93,19 @@ app.delete('/profile/:email', async (req, res) => {
     }
 });
 
-// Send OTP
+// ✅ Send OTP
 app.post('/sendOTP', async (req, res) => {
     const { email } = req.body;
     const otp = otpGenerator.generate(6, { digits: true, alphabets: false, specialChars: false });
     otpMap[email] = otp;
+
     const mailOptions = {
         from: process.env.EMAIL_USER,
         to: email,
         subject: 'OTP for Email Verification',
         text: `Your OTP is: ${otp}`
     };
+
     try {
         await transporter.sendMail(mailOptions);
         res.json({ message: "OTP sent successfully" });
@@ -112,8 +114,8 @@ app.post('/sendOTP', async (req, res) => {
     }
 });
 
-// Verify OTP
-app.post('/verifyOTP', async (req, res) => {
+// ✅ Verify OTP
+app.post('/verifyOTP', (req, res) => {
     const { email, otp } = req.body;
     if (otpMap[email] && otpMap[email] === otp) {
         delete otpMap[email];
@@ -123,11 +125,11 @@ app.post('/verifyOTP', async (req, res) => {
     }
 });
 
-// Verify Email
+// ✅ Verify Email
 app.post('/verifyEmail', async (req, res) => {
     try {
-        const existingUser = await registrationModel.findOne({ email: req.body.email });
-        if (existingUser) {
+        const user = await registrationModel.findOne({ email: req.body.email });
+        if (user) {
             res.json({ message: "Email exists" });
         } else {
             res.status(404).json({ error: "Email not found" });
@@ -137,7 +139,7 @@ app.post('/verifyEmail', async (req, res) => {
     }
 });
 
-// Start server
+// ✅ Start server
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
