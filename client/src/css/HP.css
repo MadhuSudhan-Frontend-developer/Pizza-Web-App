@@ -1,0 +1,43 @@
+/* client/src/css/HP.css */
+
+
+/* Custom CSS for Home Section */
+#home {
+    background-color: #f8f9fa; /* Set background color */
+    padding-top: 50px; /* Adjust top padding */
+}
+
+
+
+/* Custom CSS for the About section */
+.about-section {
+    padding: 50px 0; /* Adjust padding as needed */
+}
+
+.about-section img {
+    max-width: 100%; /* Ensure the image doesn't exceed its container */
+    height: auto; /* Maintain aspect ratio */
+}
+
+.about-section h2 {
+    font-size: 24px; /* Adjust heading font size */
+    color: #333; /* Set heading color */
+}
+
+.about-section p {
+    font-size: 16px; /* Adjust paragraph font size */
+    color: #666; /* Set paragraph color */
+    margin-top: 20px; /* Add some spacing between heading and paragraph */
+}
+
+
+.menu
+{
+    position: relative;
+    margin: 100px;
+}
+
+.orb{
+    bottom: 200px;
+    position: relative;
+}
